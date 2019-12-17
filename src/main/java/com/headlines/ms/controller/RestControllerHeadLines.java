@@ -1,5 +1,7 @@
 package com.headlines.ms.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import com.headlines.ms.model.HeadLineEntity;
-import com.headlines.ms.service.HeadLineServiceImpl;
+import com.headlines.ms.service.IHeadLineService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,18 +23,20 @@ import reactor.core.publisher.Mono;
 public class RestControllerHeadLines {
 
 	@Autowired
-	HeadLineServiceImpl headLineImple;
+	IHeadLineService headLineImple;
 	
 	@GetMapping("/getHeadLines")
-	public Flux<HeadLineEntity> getHeadLines() {		
+	public Flux<HeadLineEntity> getHeadLines() {	
+		
 		return headLineImple.allHeadLines();
 	}
 	
 	@PostMapping("/postHeadLine")
-	public Mono<HeadLineEntity> postHeadLine(@RequestBody HeadLineEntity headLine){
+	public Mono<HeadLineEntity> postHeadLine(@RequestBody HeadLineEntity headLine ){
 		
-		
-		return headLineImple.saveHeadLine(headLine);
+		System.out.println(headLine.getDniH());
+		return headLineImple.saveHeadLine(headLine); 
+		//headLineImple.saveHeadLine(headLine);
 	}
 	
 	@PutMapping("/updHeadLine")
@@ -44,8 +47,21 @@ public class RestControllerHeadLines {
 	
 	@DeleteMapping("/dltHeadLine/{id}")
 	public Mono<Void> dltHeadLine(@PathVariable  String id){
-		
 		return headLineImple.dltHeadLine(id);
 	}
 	
+		
+	@PostMapping("/postHeads/{id}")
+	public Flux <HeadLineEntity>postHeadLine(@RequestBody List<HeadLineEntity> n,@PathVariable String id){
+		
+		Flux<HeadLineEntity> heads = null;
+		
+		for(HeadLineEntity h : n) {
+			h.setIdCli(id);
+			Flux.just(h);
+			headLineImple.saveHeadLine(h).subscribe();
+		}
+		return heads; 
+		
+	}
 }

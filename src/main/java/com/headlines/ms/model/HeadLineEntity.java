@@ -14,6 +14,9 @@ public class HeadLineEntity {
 	private String namH;
 	private String lastNamH;
 	private String dniH;
+	
+	private String profile;
+	
 	public String getIdH() {
 		return idH;
 	}
@@ -44,7 +47,11 @@ public class HeadLineEntity {
 	public void setDniH(String dniH) {
 		this.dniH = dniH;
 	}
-	
-	
+	public String getProfile() {
+		return profile;
+	}
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
 	
 }
